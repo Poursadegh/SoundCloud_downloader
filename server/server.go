@@ -98,11 +98,6 @@ func (s *downloadServer) GetDownloadStatus(ctx context.Context, req *pb.StatusRe
 		return nil, status.Error(codes.NotFound, "download not found")
 	}
 
-	var completedAt string
-	if download.CompletedAt != nil {
-		completedAt = download.CompletedAt.Format(time.RFC3339)
-	}
-
 	return &pb.StatusResponse{
 		DownloadId:      download.ID,
 		Status:          download.Status,
