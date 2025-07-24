@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package downloader;
+
+option go_package = "soundcloud-downloader/proto";
+
+// DownloadService handles SoundCloud track downloads
+service DownloadService {
+  // DownloadTrack downloads a track from SoundCloud
+  rpc DownloadTrack(DownloadRequest) returns (DownloadResponse) {}
+  
+  // GetDownloadStatus gets the status of a download
+  rpc GetDownloadStatus(StatusRequest) returns (StatusResponse) {}
+  
+  // ListDownloads lists all downloads
+  rpc ListDownloads(ListRequest) returns (ListResponse) {}
+}
+
+// DownloadRequest contains the information needed to download a track
+message DownloadRequest {
+  string soundcloud_url = 1;
+  string output_directory = 2;
+  string filename = 3;  // Optional, will use track ID if not provided
+}
+
+// DownloadResponse contains the result of a download request
+message DownloadResponse {
+  string download_id = 1;
+  string status = 2;  // "started", "completed", "failed"
+  string message = 3;
+  string file_path = 4;
+  int64 file_size = 5;
+}
+
+// StatusRequest requests the status of a specific download
+message StatusRequest {
+  string download_id = 1;
+}
+
+// StatusResponse contains the current status of a download
+message StatusResponse {
+  string download_id = 1;
+  string status = 2;  // "pending", "downloading", "completed", "failed"
+  string message = 3;
+  int32 progress_percent = 4;
+  string file_path = 5;
+  int64 file_size = 6;
+  string error_message = 7;
+}
+
+// ListRequest requests a list of all downloads
+message ListRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+// ListResponse contains a list of downloads
+message ListResponse {
+  repeated DownloadInfo downloads = 1;
+  int32 total_count = 2;
+}
+
+// DownloadInfo contains information about a download
+message DownloadInfo {
+  string download_id = 1;
+  string soundcloud_url = 2;
+  string status = 3;
+  string file_path = 4;
+  int64 file_size = 5;
+  string created_at = 6;
+  string completed_at = 7;
+  string error_message = 8;
+} 
